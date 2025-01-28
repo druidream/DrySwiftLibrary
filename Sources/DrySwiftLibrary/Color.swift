@@ -8,28 +8,36 @@
 import SwiftUI
 import UIKit
 
-extension Color {
-    static func fromHexString(_ hex:String) -> Color {
-        Color(hex: hex) ?? .clear
-    }
-
-    init?(hex: String) {
+public extension Color {
+    init(hex: String, defaultColor: Color = .clear) {
         guard let components = parseHexColor(hex) else {
-            return nil
+            self = defaultColor
+            return
         }
 
         self.init(red: components.r, green: components.g, blue: components.b, opacity: components.a)
     }
 }
 
-struct RGBAComponents {
+public extension UIColor {
+    convenience init(hex: String) {
+        guard let components = parseHexColor(hex) else {
+            self.init(red: 0, green: 0, blue: 0, alpha: 0)
+            return
+        }
+
+        self.init(red: components.r, green: components.g, blue: components.b, alpha: components.a)
+    }
+}
+
+private struct RGBAComponents {
     let r: CGFloat
     let g: CGFloat
     let b: CGFloat
     let a: CGFloat
 }
 
-func parseHexColor(_ hex: String) -> RGBAComponents? {
+private func parseHexColor(_ hex: String) -> RGBAComponents? {
     var cleanedHexString = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
 
     if cleanedHexString.hasPrefix("#") {
